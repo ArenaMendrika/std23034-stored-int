@@ -10,22 +10,19 @@ import org.springframework.stereotype.Service;
 public class StoredIntService {
 
   private static final String FILE_NAME = "/tmp/stored-int.txt";
-  private static final Object LOCK = new Object();
 
   public int getOrCreateStoredInt() throws Exception {
-    synchronized (LOCK) {
-      File file = new File(FILE_NAME);
+    File file = new File(FILE_NAME);
 
-      if (file.exists()) {
-        String content = Files.readString(file.toPath()).trim();
-        return Integer.parseInt(content);
-      } else {
-        int value = new Random().nextInt(100) + 1;
-        try (FileWriter writer = new FileWriter(file)) {
-          writer.write(String.valueOf(value));
-        }
-        return value;
+    if (file.exists()) {
+      String content = Files.readString(file.toPath()).trim();
+      return Integer.parseInt(content);
+    } else {
+      int value = new Random().nextInt(100) + 1;
+      try (FileWriter writer = new FileWriter(file)) {
+        writer.write(String.valueOf(value));
       }
+      return value;
     }
   }
 }
